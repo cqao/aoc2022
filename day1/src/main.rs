@@ -2,11 +2,6 @@
 //   Part 1: Need to find the elf with the most calories and report how many calories they have.
 //   Part 2: Add the top 3 calorie carrying elves
 
-// Step 1: Read file, pause on newline
-// Step 2: Add numbers to get an elf's total
-// Step 3: Put totals into a vector
-// Step 4: Sort and find answers
-
 use std::env;
 use std::fs::File;
 use std::io::{BufReader, BufRead};
@@ -36,8 +31,6 @@ fn main() {
         }
     }
 
-    //println!("Total: {:?}", elf_totals);
-
     elf_totals.sort();
 
     let part2_total: i32 = elf_totals[elf_totals.len()-1] + elf_totals[elf_totals.len()-2] + elf_totals[elf_totals.len()-3];
@@ -45,7 +38,4 @@ fn main() {
     println!("Part 1: Largest Total Calories: {}", elf_totals[elf_totals.len() - 1]);
     println!("Part 2: Top 3 Total Calories: {}", part2_total);
     
-
-
-
 }
