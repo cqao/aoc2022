@@ -24,21 +24,137 @@ fn main() {
     let f = File::open(&args[1]).expect("Unable to open file");
     let f = BufReader::new(f);
 
-    let mut opp_move: Vec<char> = Vec::new();
-    let mut my_move: Vec<char> = Vec::new();
+    //let mut opp_move: Vec<char> = Vec::new();
+    //let mut my_move: Vec<char> = Vec::new();
+
+    let mut total_part_one = 0;
+    let mut total_part_two = 0;
 
     for line in f.lines() {
         let line = line.expect("Unable to read line");
 
-        opp_move.push(line.chars().next().unwrap());
-        my_move.push(line.chars().last().unwrap());
+        let opp_move: char = line.chars().next().unwrap();
+        let my_move:  char = line.chars().last().unwrap();
+    
+        total_part_one = total_part_one + part_one(&opp_move, &my_move);
+        total_part_two = total_part_two + part_two(&opp_move, &my_move);
     }
 
-    println!("Opp: {:?}", opp_move);
-    println!("Me: {:?}", my_move);
+    println!("Total score for Part 1: {}", total_part_one);
+    println!("Total score for Part 2: {}", total_part_two);
 
+}
+
+pub fn part_one(om: &char, mm: &char) -> i32 {
     // Rules:
-    //  Scissors > Paper > Rock > Scissors 
+    //  Scissors > Paper > Rock > Scissors
 
+    // A = X = Rock     (1 pts)
+    // B = Y = Paper    (2 pts)
+    // C = Z = Scissors (3 pts)
 
+    let mut t = 0;
+
+    if *mm == 'X' {
+        t = t + 1;
+    }
+
+    else if *mm == 'Y' {
+        t = t + 2;
+    }
+
+    else if *mm == 'Z' {
+        t = t + 3;
+    }
+
+    // Paper beats Rock
+
+    if *om == 'A' && *mm == 'Y' {
+        t = t + 6;
+    }
+
+    // Scissors beat Paper
+    if *om == 'B' && *mm == 'Z' {
+        t = t + 6;
+    }
+
+    // Rock beats Scissors
+    if *om == 'C' && *mm == 'X' {
+        t = t + 6;
+    }
+
+    // Handle ties
+
+    if (*om == 'A' && *mm == 'X') ||
+       (*om == 'B' && *mm == 'Y') || 
+       (*om == 'C' && *mm == 'Z') {
+        t = t + 3;
+    }
+
+    //println!("Line {}: {}", om, t);
+    return t;
+}
+
+pub fn part_two(om: &char, mm: &char) -> i32 {
+    // Rules:
+    //  Scissors > Paper > Rock > Scissors
+
+    // A = Rock     (1 pts)
+    // B = Paper    (2 pts)
+    // C = Scissors (3 pts)
+
+    // X == L (0 pts)
+    // Y == T (3 pts)
+    // Z == W (6 pts)
+
+    let mut t = 0;
+
+    // Ties
+
+    if *om == 'A' && *mm == 'Y' {
+        t = t + 4;
+    }
+
+    else if *om == 'B' && *mm == 'Y' {
+        t = t + 5;
+    }
+
+    else if *om == 'C' && *mm == 'Y'{
+        t = t + 6;
+    }
+
+    // Wins
+    if *om == 'A' && *mm == 'Z'{
+        // Paper
+        t = t + 8;
+    }
+
+    else if *om == 'B' && *mm == 'Z'{
+        // Scissors
+        t = t + 9;
+    }
+
+    else if *om == 'C' && *mm == 'Z'{
+        // Rock
+        t = t + 7;
+    }
+
+    // Loses
+
+    if *om == 'A' && *mm == 'X'{
+        // Scissors
+        t = t + 3;
+    }
+
+    else if *om == 'B' && *mm == 'X'{
+        // Rock
+        t = t + 1;
+    }
+
+    else if *om == 'C' && *mm == 'X'{
+        // Paper
+        t = t + 2;
+    }
+
+    return t;
 }
