@@ -24,9 +24,6 @@ fn main() {
     let f = File::open(&args[1]).expect("Unable to open file");
     let f = BufReader::new(f);
 
-    //let mut opp_move: Vec<char> = Vec::new();
-    //let mut my_move: Vec<char> = Vec::new();
-
     let mut total_part_one = 0;
     let mut total_part_two = 0;
 
@@ -46,13 +43,6 @@ fn main() {
 }
 
 pub fn part_one(om: &char, mm: &char) -> i32 {
-    // Rules:
-    //  Scissors > Paper > Rock > Scissors
-
-    // A = X = Rock     (1 pts)
-    // B = Y = Paper    (2 pts)
-    // C = Z = Scissors (3 pts)
-
     let mut t = 0;
 
     if *mm == 'X' {
@@ -96,16 +86,6 @@ pub fn part_one(om: &char, mm: &char) -> i32 {
 }
 
 pub fn part_two(om: &char, mm: &char) -> i32 {
-    // Rules:
-    //  Scissors > Paper > Rock > Scissors
-
-    // A = Rock     (1 pts)
-    // B = Paper    (2 pts)
-    // C = Scissors (3 pts)
-
-    // X == L (0 pts)
-    // Y == T (3 pts)
-    // Z == W (6 pts)
 
     let mut t = 0;
 
