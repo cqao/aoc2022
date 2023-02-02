@@ -1,54 +1,89 @@
-
-// Each ruck has 2 compartments
-// Each item is meant to go into only one of the compartments
-// Items identified by lowercase or uppercase letter
-// Each item has a priotiry assigned: 'a' through 'z' has priority values 1 - 26
-// Each item has a priotiry assigned: 'A' through 'Z' has priority values 27 - 52
-// Each ruck compartment shares an item
-
-// GOAL: Add the priority values for each shared component
-
-// Split each line in half
-// Compare each half to find shared item
-// Add to priority sum
+// Solve:
+//  Part 1: Add the priority values for each shared component
+//  Part 2: Add the priority values for each component shared across 3 lines  
 
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::{BufReader, BufRead};
+use std::io::{Seek, SeekFrom};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     println!("Opening {}.", args[1]);
 
-    let f = File::open(&args[1]).expect("Unable to open file");
-    let f = BufReader::new(f);
+    let mut f = File::open(&args[1]).expect("Unable to open file");
 
+    println!("Total Priority Part 1: {}", part_one(&f));
+
+    f.seek(SeekFrom::Start(0)).expect("Seek reset failed");
+    println!("Total Priority Part 2: {}", part_two(&f));
+}
+
+fn part_one(f: &File) -> i32 {
+
+    let f = BufReader::new(f);
+    let mut sum = 0;
     let priority: HashMap<char, i32> = populate_map();
-    let mut sum: i32 = 0;
+    let mut exists: bool = false;
 
     for line in f.lines() {
         let line = line.expect("Unable to read line");
 
-        //println!("{}, length = {}", line, line.chars().count());
-
         let (one, two) = line.split_at(line.chars().count() / 2);
-
-        //println!("One: {}\nTwo: {}", one, two);
 
         for c in one.chars() {
             if two.contains(c) {
-                //println!("Found match {}\n", c);
+
+                if !exists {
+                    sum = sum + priority.get(&c).unwrap();
+                    exists = true;
+                }
                 
-                sum = sum + priority.get(&c).unwrap();
-                
-                break;
             }
         }
 
+        exists = false;
+    }
+    
+    return sum;
+}
+
+fn part_two(f: &File) -> i32 {
+
+    let f = BufReader::new(f);
+    let mut v: Vec<String> = Vec::new();
+    let mut sum = 0;
+    
+    let priority: HashMap<char, i32> = populate_map();
+    let mut exists: bool = false;
+    
+    for line in f.lines() {
+        let line = line.expect("Unable to read line");
+
+        v.push(line);
     }
 
-    println!("Total Priority: {}", sum);
+    for i in (0..v.len()).step_by(3) {
+        let s1 = &v[i];
+        let s2 = &v[i+1];
+        let s3 = &v[i+2];
+
+        for c in s1.chars() {
+            if s2.contains(c) && s3.contains(c) {
+
+                if !exists {
+                    sum = sum + priority.get(&c).unwrap();
+                    exists = true;
+                }
+                
+            }
+        }
+
+        exists = false;
+    }
+
+    return sum;
 }
 
 fn populate_map() -> HashMap<char, i32> {
